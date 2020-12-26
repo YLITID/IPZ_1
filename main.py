@@ -6,9 +6,9 @@ from socket import *
 #Socket client side
 
 s=socket()
-s.connect(('localhost', 9999))
+#s.connect(('localhost', 9999))
 
-datatoconnect = s.recv(1024)
+#datatoconnect = s.recv(1024)
 
 
 
