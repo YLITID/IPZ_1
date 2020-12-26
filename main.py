@@ -29,16 +29,29 @@ def Login():
     adminemode = False
     if ui.lineEdit_user_id.text()=='admin' and ui.lineEdit_password.text()=='admin':
         adminemode=True
-        print(adminemode)
+
+        ui.label_success.setText("Admin mode")
+        ui.pushButton_Admin.show()
+        ui.pushButton_Admin.setEnabled(True)
+
+        return adminemode
     if True:
         ui.pushButton_Start.setEnabled(True)
         ui.label_success.setText("Success")
     else:
         ui.label_success.setText("Unsuccess")
 
-    if adminemode == True:
-        ui.label_success.setText("Admin mode")
-ui.pushButton_Login.clicked.connect(Login)
+    return adminemode
+def Admin_checkDate():
+    adminmode
+    if adminmode != True:
+        return
+    Date = ui.calendarWidget.selectedDate()
+    print("{0}.{1}.{2}".format(Date.day(), Date.month(), Date.year()))
+    return Date.getDate()
+adminmode = ui.pushButton_Login.clicked.connect(Login)
+Date = ui.pushButton_Admin.clicked.connect(Admin_checkDate)
+
 
 def ComeTW():
     global startstop
