@@ -68,6 +68,10 @@ class Ui_Dialog_start(object):
         self.pushButton_Admin.setGeometry(QRect(170, 340, 75, 23))
         self.pushButton_Admin.setEnabled(False)
         self.pushButton_Admin.hide()
+        self.textBrowser_Error = QTextBrowser(Dialog_start)
+        self.textBrowser_Error.setObjectName(u"label_Connection")
+        self.textBrowser_Error.setGeometry(QRect(270, 280, 221, 91))
+        self.textBrowser_Error.hide()
 
         self.retranslateUi(Dialog_start)
 
@@ -86,5 +90,6 @@ class Ui_Dialog_start(object):
         self.label_Connection.setText("Conection")
         self.label_success.setText("")
         self.label_TimeR_St.setText("")
+        self.textBrowser_Error.setText("")
     # retranslateUi
 

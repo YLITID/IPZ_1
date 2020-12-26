@@ -3,14 +3,6 @@ import sys
 import time
 from socket import *
 
-#Socket client side
-
-s=socket()
-#s.connect(('localhost', 9999))
-
-#datatoconnect = s.recv(1024)
-
-
 
 #Create UI app
 app = QApplication(sys.argv)
@@ -23,10 +15,16 @@ Form.show()
 timenow = ''
 startstop = True
 
+def ErrorShow(error_type, error_code):
+    print(error_type,error_code)
+    ui.textBrowser_Error.show()
+    ui.textBrowser_Error.setText(error_type+str(error_code))
 
 def Login():
     global adminemode
     adminemode = False
+    #s.send(ui.lineEdit_user_id.text())
+    #s.send(ui.lineEdit_password.text())
     if ui.lineEdit_user_id.text()=='admin' and ui.lineEdit_password.text()=='admin':
         adminemode=True
 
@@ -46,8 +44,9 @@ def Admin_checkDate():
     adminmode
     if adminmode != True:
         return
-    Date = ui.calendarWidget.selectedDate()
-    print("{0}.{1}.{2}".format(Date.day(), Date.month(), Date.year()))
+    QDate = ui.calendarWidget.selectedDate.text()
+    Date = "{0}.{1}.{2}".format(QDate.day(), QDate.month(), QDate.year())
+    print("{0}.{1}.{2}".format(QDate.day(), QDate.month(), QDate.year()))
     return Date.getDate()
 adminmode = ui.pushButton_Login.clicked.connect(Login)
 Date = ui.pushButton_Admin.clicked.connect(Admin_checkDate)
@@ -65,6 +64,23 @@ def ComeTW():
         ui.label_TimeR_St.setText("Завершено роботу о " + timenow)
     startstop = not startstop
 ui.pushButton_Start.clicked.connect(ComeTW)
+
+#Socket client side
+
+s=socket()
+
+try:
+    s.connect(('localhost', 9999))
+except ConnectionRefusedError:
+    print(ValueError.__context__)
+    ErrorShow('Conection Eror:\n',ValueError)
+    ui.label_Connection.setText('Conection Error')
+    s.close()
+else:
+    ui.label_Connection.setText('Conected')
+
+
+
 
 
 #Run main loop
