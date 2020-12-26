@@ -28,7 +28,7 @@ class Ui_Dialog_start(object):
         self.calendarWidget.setGeometry(QRect(10, 60, 321, 191))
         self.pushButton_Start = QPushButton(Dialog_start)
         self.pushButton_Start.setObjectName(u"pushButton_Start")
-        self.pushButton_Start.setEnabled(False)
+        self.pushButton_Start.setEnabled(True)
         self.pushButton_Start.setGeometry(QRect(350, 30, 131, 31))
         self.label_Time = QLabel(Dialog_start)
         self.label_Time.setObjectName(u"label_Time")
