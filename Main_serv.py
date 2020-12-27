@@ -32,7 +32,7 @@ def Search(df, login, password):
 
 Con_num = 1
 admin_st = 0
-datal = ''
+
 datap = ''
 
 while True:
@@ -42,6 +42,7 @@ while True:
         choise = conn.recv(1).decode()
         print('Choise', choise)
         if choise == 'l':  # Login
+            global datal
             data_sql = pd.read_sql("SELECT L.admin_st,L.login,P.password FROM Employee as L INNER JOIN Employee_p as P "
                                    "on L.Employee_id =P.Employee_id ", cnxn)
             conn.send('1'.encode())
@@ -67,8 +68,18 @@ while True:
             conn.send('1'.encode())
             conn.send('1'.encode())
             datat_sec = int(conn.recv(1024).decode())
-            conn.send('1'.encode())
             print(datast, datat, datat_sec)
+            print(f"SELECT Employee_id from Employee where login = \'{datal}\'")
+            next_id = cursor.execute('SELECT @@IDENTITY AS id;').fetchone()[0]
+            print(next_id)
+            Employee_id_sql = pd.read_sql(f"SELECT Employee_id from Employee where login = '{datal}'", cnxn)
+            Employee_id = Employee_id_sql['Employee_id'].iloc[0]
+            print(Employee_id)
+            cursor.execute(f"INSERT INTO Worktime (Worktime_event_id, [Start/Stop],Employee_id, Datetime_sec, Datetime) values(2,'{datast}','{Employee_id}','{datat_sec}','{datat}')")
+            cnxn.commit()
+            print('Comitted')
+            conn.send('1'.encode())
+
             choise = ''
         elif choise == 'a':  # Admin Check
             conn.send('1'.encode())
@@ -76,5 +87,5 @@ while True:
             conn.send('1'.encode())
             print(datatadm)
         Con_num += 1
-    except:
-        pass
+    except Exception as ex:
+        print(ex)
