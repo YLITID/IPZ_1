@@ -1,6 +1,8 @@
 from socket import *
 import pyodbc as sql
 import pandas as pd
+import pickle
+from PySide2.QtCore import QDateTime
 
 cnxn_str = ("Driver={SQL Server Native Client 11.0};"
             "Server=localhost;"
@@ -14,7 +16,7 @@ s = socket()
 
 s.bind(('', 9999))
 
-s.listen(5)
+s.listen(50)
 
 
 def Search(df, login, password):
@@ -61,6 +63,10 @@ while True:
             print( data_sql)
             choise = ''
         elif choise == 'c':  # Coming to work
+            qtimenow = QDateTime.currentDateTime()
+            timenow = qtimenow.toString('hh:mm:ss')
+            datenow = qtimenow.toString('dd.MM.yyyy')
+            timenow_s = str(qtimenow.currentSecsSinceEpoch())
             conn.send('1'.encode())
             datat = conn.recv(1024).decode()
             conn.send('1'.encode())
@@ -70,22 +76,27 @@ while True:
             datat_sec = int(conn.recv(1024).decode())
             print(datast, datat, datat_sec)
             print(f"SELECT Employee_id from Employee where login = \'{datal}\'")
-            next_id = cursor.execute('SELECT @@IDENTITY AS id;').fetchone()[0]
-            print(next_id)
+
             Employee_id_sql = pd.read_sql(f"SELECT Employee_id from Employee where login = '{datal}'", cnxn)
             Employee_id = Employee_id_sql['Employee_id'].iloc[0]
             print(Employee_id)
-            cursor.execute(f"INSERT INTO Worktime (Worktime_event_id, [Start/Stop],Employee_id, Datetime_sec, Datetime) values(2,'{datast}','{Employee_id}','{datat_sec}','{datat}')")
+            cursor.execute(f"INSERT INTO Worktime ([Start/Stop],Employee_id, Datetime_sec, [Time] , [Date]) values('{datast}','{Employee_id}','{timenow_s}','{timenow}','{datenow}')")
             cnxn.commit()
             print('Comitted')
             conn.send('1'.encode())
 
-            choise = ''
+
         elif choise == 'a':  # Admin Check
             conn.send('1'.encode())
             datatadm = conn.recv(1024).decode()
             conn.send('1'.encode())
-            print(datatadm)
+
+            Employee_data_adm_sql = pd.read_sql(f"SELECT W.Employee_id, E.First_Name, E.Last_Name, W.[Start/Stop],W.[Time], W.[Date] FROM Worktime as W "
+                                                f"RIGHT JOIN Employee as E on W.Employee_id=E.Employee_id "
+                                                f"WHERE W.[Date]='{datatadm}';", cnxn)
+            df_bytes = pickle.dumps(Employee_data_adm_sql)
+
+            conn.send(df_bytes)
         Con_num += 1
     except Exception as ex:
         print(ex)
